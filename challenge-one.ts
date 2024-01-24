@@ -8,6 +8,9 @@ interface House {
 interface HouseWithID extends House{
 	id: number;
 }
+
+
+
 	
 function findHouses(houses: string): HouseWithID[];
 function findHouses(
