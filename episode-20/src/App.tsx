@@ -49,6 +49,45 @@ type ActionType = {
   id: number
 }
 
+type ButtonProps = {
+  children: React.ReactNode;
+} & React.ButtonHTMLAttributes<HTMLButtonElement>
+
+const Button: React.FC<ButtonProps> = ({ children, ...rest }) => (
+  <button style={{
+    backgroundColor: "blue",
+    color: "white",
+    padding: "10px 15px",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    fontSize: "1.2rem",
+    margin: "10px"
+  }} {...rest}>
+    {children}
+  </button>
+)
+
+/////////////////////////////////////////////
+// Give type to setter function of useState
+const useNumber = (initialValue: number) => useState<number>(initialValue);
+
+type UseNumberValue = ReturnType<typeof useNumber>[0];
+type UseNumberSetValue = ReturnType<typeof useNumber>[1];
+
+////////////////////////////////////////
+
+const Incrementer: React.FC<{
+  value: UseNumberValue;
+  setValue: UseNumberSetValue;
+}> = ({value, setValue}) => (
+  <Button onClick={() => setValue(value + 1)}>
+    Add - {value}
+  </Button>
+)
+
+
+
 function App() {
 
   const [payload, setPayload] = useState<PayloadType | null>(null)
@@ -96,6 +135,8 @@ function App() {
 
   const [todos, dispatch] = useReducer(reducer, [])
 
+  const [value, setValue] = useNumber(0)
+
   return (
     <>
       <Heading title="Introduction" />
@@ -108,7 +149,8 @@ function App() {
       />
       <Box>{JSON.stringify(payload)}</Box>
       <br/>
-      <br/>
+      <br />
+      <Incrementer value={value} setValue={setValue} />
       <br/>
       <br />
       <Heading title="Todos" />
@@ -122,7 +164,7 @@ function App() {
       <div>
       {/* <label htmlFor="todo">Add Todo: </label> */}
       <input ref={inputValue} name="todo" placeholder='Add a Todo' type='text'/>
-      <button onClick={onAddTodoBatonHandler}>Add</button>
+      <Button onClick={onAddTodoBatonHandler}>Add</Button>
       </div>
     </>
   )
