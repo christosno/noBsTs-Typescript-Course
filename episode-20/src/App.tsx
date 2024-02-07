@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { useTodos } from './useTodos';
 
+import { UL } from './GenericComponent';
+
 import './App.css'
 
 
@@ -128,13 +130,19 @@ function App() {
       <br/>
       <br />
       <Heading title="Todos" />
-      {todos.map((todo) => {
+      {/* {todos.map((todo) => {
         return (
           <div key={todo.id}>
             <span onClick={() => removeTodo(todo.id )}>{todo.text}</span>
           </div>
         )
-      })}
+      })} */}
+      <UL
+        items={todos}
+        render={(todo) => <span>{todo.text}</span>}
+        itemClick={(todo) => removeTodo(todo.id)}
+        className='todo-list'
+      />
       <div>
       {/* <label htmlFor="todo">Add Todo: </label> */}
       <input ref={inputValue} name="todo" placeholder='Add a Todo' type='text'/>
