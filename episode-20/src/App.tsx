@@ -1,4 +1,6 @@
-import React, { useCallback, useEffect, useReducer, useState, useRef} from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
+import { useTodos } from './useTodos';
+
 import './App.css'
 
 
@@ -33,20 +35,6 @@ const List: React.FunctionComponent<{
 
 interface PayloadType {
   text: string;
-}
-
-interface TodoType {
-  id: number;
-  text: string;
-  done: boolean;
-};
-
-type ActionType = {
-  type: "ADD_TODO";
-  text: string;
-} | {
-  type: "REMOVE_TODO";
-  id: number
 }
 
 type ButtonProps = {
@@ -93,10 +81,16 @@ function App() {
   const [payload, setPayload] = useState<PayloadType | null>(null)
   const inputValue = useRef<HTMLInputElement>(null)
 
+  const { todos, addTodo, removeTodo } = useTodos([
+    { id: 1, text: "Buy Milk", done: false },
+    { id: 2, text: "Meeting with boss", done: false },
+    { id: 3, text: "Dentist appointment", done: false }
+  ])
+
   const onAddTodoBatonHandler = () => {
     // meed to add that condtion to avoid null type error
     if (inputValue && inputValue.current) {
-      dispatch({ type: "ADD_TODO", text: inputValue.current.value })
+      addTodo(inputValue.current.value )
       inputValue.current.value = ""
     }
 
@@ -114,26 +108,6 @@ function App() {
         setPayload(data)
       })
   }, [])
-
-  const reducer = (todosList: TodoType[], action: ActionType) => {
-    switch (action.type) {
-      case "ADD_TODO":
-        return [
-          ...todosList, 
-          {
-            id: Math.random(),
-            text: action.text,
-            done: false
-          }
-        ]
-      case "REMOVE_TODO": 
-        return todosList.filter((todo) => todo.id !== action.id)
-      default:
-        throw new Error("Action type not found")
-    }
-  }
-
-  const [todos, dispatch] = useReducer(reducer, [])
 
   const [value, setValue] = useNumber(0)
 
@@ -157,7 +131,7 @@ function App() {
       {todos.map((todo) => {
         return (
           <div key={todo.id}>
-            <span onClick={() => dispatch({ type: "REMOVE_TODO", id: todo.id })}>{todo.text}</span>
+            <span onClick={() => removeTodo(todo.id )}>{todo.text}</span>
           </div>
         )
       })}
