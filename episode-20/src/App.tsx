@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
-import { useTodos } from './useTodos';
+import { TodosProvider, useTodos, useAddTodos, useRemoveTodos } from './useTodos';
 
 import { UL } from './GenericComponent';
 
@@ -83,11 +83,9 @@ function App() {
   const [payload, setPayload] = useState<PayloadType | null>(null)
   const inputValue = useRef<HTMLInputElement>(null)
 
-  const { todos, addTodo, removeTodo } = useTodos([
-    { id: 1, text: "Buy Milk", done: false },
-    { id: 2, text: "Meeting with boss", done: false },
-    { id: 3, text: "Dentist appointment", done: false }
-  ])
+  const todos = useTodos();
+  const addTodo = useAddTodos();
+  const removeTodo = useRemoveTodos();
 
   const onAddTodoBatonHandler = () => {
     // meed to add that condtion to avoid null type error
@@ -152,4 +150,40 @@ function App() {
   )
 }
 
-export default App
+
+const AppWrapper = () => (
+	<div style={{
+    display: "flex",
+    flexDirection: "row",
+  }}>
+    <TodosProvider initialTodos={[
+    { id: 1, text: "Buy Milk", done: false },
+    { id: 2, text: "Meeting with boss", done: false },
+    { id: 3, text: "Dentist appointment", done: false }
+  ]}>
+    <div style={{
+      display: "flex",
+      flexDirection: "column",
+      border: "1px solid black",
+      margin: "10px",
+      padding: "10px",
+    }}>
+      
+      <App></App>
+    </div>
+    <div style={{
+      display: "flex",
+      flexDirection: "column",
+      border: "1px solid black",
+      margin: "10px",
+      padding: "10px",
+	  }}>
+      <App></App>
+    </div>
+    </TodosProvider>
+	</div>
+)
+
+
+export default AppWrapper;
+
